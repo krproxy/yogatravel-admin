@@ -11,8 +11,17 @@
 |
 */
 
-Route::get('/', 'HomeController@index');
+Route::get('/', 'HomeController@users');
 
-Route::get('/home', 'HomeController@index');
+Route::get('/home', 'HomeController@users');
+
+Route::get('/users/{case?}', 'HomeController@users');
+
+Route::get('/user/{id?}', 'HomeController@user');
+
+Route::get('/find', 'HomeController@find');
+Route::post('/findPost', 'HomeController@findPost');
+
+Route::post('/action/{type}/{userId}', 'HomeController@action');
 
 Auth::routes();

@@ -5,6 +5,7 @@
         <tr class="active">
             <th>Name</th>
             <th>Email</th>
+            <th>Last login</th>
             <th>Actions</th>
         </tr>
         @foreach ($users as $user)
@@ -14,6 +15,9 @@
             </td>
             <td style="cursor:pointer" class='clickable-row' data-href={{url('/user/' . $user->id)}}>
               {{ $user->email }}
+            </td>
+            <td style="cursor:pointer" class='clickable-row' data-href={{url('/user/' . $user->id)}}>
+              {{ $user->last_login_at == '0000-00-00 00:00:00' ? 'never' : Carbon\Carbon::parse($user->last_login_at)->diffForHumans() }}
             </td>
             <td class="col-md-2">
               @if($user->is_blocked === 1)

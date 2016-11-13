@@ -17,5 +17,9 @@ class YogaUser extends Model
    *
    * @var string
    */
-   protected $connection = 'mysql_test';
+   protected $connection  = null;
+
+  function __construct() {
+      $this->connection = env('DB_CONNECTION_TYPE', 'mysql_test');
+  }
 }

@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use \App\YogaUser;
 
+
 class HomeController extends Controller
 {
     private $_yogaUsers;
+    // private $_instructorUsers;
     /**
      * Create a new controller instance.
      *
@@ -16,7 +18,37 @@ class HomeController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->_yogaUsers = YogaUser::all();
+
+        $this->middleware(function ($request, $next) {
+
+            // $this->_yogaUsers = YogaUser::all();
+
+            // $this->projects = Auth::user()->projects;
+
+
+            if (\Auth::check()) {
+              switch (\Auth::user()->role) {
+                case 'admin':
+                  $this->_yogaUsers = YogaUser::all();
+                  break;
+                case 'instructor':
+                  $this->_yogaUsers = YogaUser::where('instructor', '=', \Auth::user()->email)->get();
+                  break;               
+                default:
+                  # code...
+                  break;
+              }
+              // $this->_instructorUsers = $this->_yogaUsers->filter(function ($item) {
+              //   // dd(Auth::user());
+              //   return $item->instructor == \Auth::user()->email;
+              // });
+            }
+
+            return $next($request);
+        });
+
+
+        // dd($this->_instructorUsers);
     }
 
     public function user($userId = null)
@@ -33,15 +65,43 @@ class HomeController extends Controller
 
     public function users($Case = 'all')
     {
-      switch ($Case) {
-        case 'unblocked':
-          $yogaUsersPaginate = YogaUser::where('is_blocked', '=', 0)->paginate(10);
+      // switch ($Case) {
+      //   case 'unblocked':
+      //     $yogaUsersPaginate = YogaUser::where('is_blocked', '=', 0)->paginate(10);
+      //     break;
+      //   case 'blocked':
+      //     $yogaUsersPaginate = YogaUser::where('is_blocked', '=', 1)->paginate(10);
+      //     break;
+      //   default:
+      //     $yogaUsersPaginate = YogaUser::paginate(10);
+      //     break;
+
+      switch (\Auth::user()->role) {
+        case 'admin':
+          switch ($Case) {
+            case 'unblocked':
+              $yogaUsersPaginate = YogaUser::where('is_blocked', '=', 0)->paginate(10);
+              break;
+            case 'blocked':
+              $yogaUsersPaginate = YogaUser::where('is_blocked', '=', 1)->paginate(10);
+              break;
+            default:
+              $yogaUsersPaginate = YogaUser::paginate(10);
+              break;
+          }
           break;
-        case 'blocked':
-          $yogaUsersPaginate = YogaUser::where('is_blocked', '=', 1)->paginate(10);
-          break;
-        default:
-          $yogaUsersPaginate = YogaUser::paginate(10);
+        case 'instructor':
+          switch ($Case) {
+            case 'unblocked':
+              $yogaUsersPaginate = YogaUser::where('instructor', '=', \Auth::user()->email)->where('is_blocked', '=', 0)->paginate(10);
+              break;
+            case 'blocked':
+              $yogaUsersPaginate = YogaUser::where('instructor', '=', \Auth::user()->email)->where('is_blocked', '=', 1)->paginate(10);
+              break;
+            default:
+              $yogaUsersPaginate = YogaUser::where('instructor', '=', \Auth::user()->email)->paginate(10);
+               break;
+          }
           break;
       }
 
@@ -49,7 +109,7 @@ class HomeController extends Controller
         'currentPage' => $Case,
         'users' => $yogaUsersPaginate,
         'yogaUsers' => $this->_yogaUsers
-        ]);
+      ]);
     }
 
     public function action($type, $userId)

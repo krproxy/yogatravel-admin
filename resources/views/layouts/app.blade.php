@@ -122,10 +122,13 @@
                           </span>
                           Blocked
                       </a>
+                        <a href={{url('/find')}}  class="list-group-item {{isset($currentPage)&&$currentPage === 'find'?'active':''}}">
+                            Find User
+                        </a>
                   </div>
                 </div>
               </div>
-                <div class="col-md-8">
+                <div class="col-md-10">
                     <!-- <div class="panel panel-default">
                         <div class="panel-heading">Dashboard</div>
 
@@ -144,7 +147,7 @@
                     @endif
                     @yield('content')
                 </div>
-                <div class="col-md-2">
+{{--                 <div class="col-md-2">
                     <div class="panel panel-default">
                         <div class="panel-heading">Menu</div>
 
@@ -158,7 +161,7 @@
                             </a>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>

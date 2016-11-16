@@ -112,7 +112,7 @@ class HomeController extends Controller
       ]);
     }
 
-    public function action($type, $userId)
+    public function action($type, $userId, Request $request)
     {
         $user = $this->_yogaUsers->first(function ($val) use ($userId) {return $val->id == $userId;});
         if(!isset($user))return redirect()->back()->withErrors('Вы попытались совершить действие с несуществующим пользователем!');
@@ -123,6 +123,9 @@ class HomeController extends Controller
             break;
           case 'unblock':
             $user->is_blocked = 0;
+            break;
+          case 'instructorChange':
+            $user->instructor = $request->instructor;
             break;
           default:
             # code...

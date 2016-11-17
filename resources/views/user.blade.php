@@ -5,6 +5,8 @@
     <tr class="active">
         <th>Name</th>
         <th>Email</th>
+        <th>Last login</th>
+        <th>Instructor</th>
         <th>Actions</th>
     </tr>
     <tr class={{$user->is_blocked === 1 ? 'danger' : $user->is_accepted === 1 ? 'warning' : 'succes'}}>
@@ -13,6 +15,21 @@
         </td>
         <td>
           {{ $user->email }}
+        </td>
+        <td>
+              {{ $user->last_login_at == '0000-00-00 00:00:00' ? 'never' : Carbon\Carbon::parse($user->last_login_at)->diffForHumans() }}
+        </td>
+        <td>
+            <form action="{{ url('/action/instructorChange/' . $user->id) }}" method="POST">
+              {{ csrf_field() }}
+              <select name="instructor">
+                <option {{$user->instructor == ''?'selected':''}} value="">Выберите инструктора</option>
+                @foreach(app\User::on('mysql_auth')->where('role', '=', 'instructor')->get() as $instructor)
+                  <option {{$user->instructor == $instructor->email?'selected':''}} value={{$instructor->email}}>{{$instructor->name}}</option>
+                @endforeach
+              </select>
+              <input type="submit" value="Change" class="btn btn-sm btn-success">
+            </form>
         </td>
         <td class="col-md-2">
           @if($user->is_blocked === 1)

@@ -12,7 +12,7 @@
         @foreach ($users as $user)
         <tr class={{$user->is_blocked === 1 ? 'danger' : $user->is_accepted === 1 ? 'warning' : 'succes'}}>
             <td style="cursor:pointer" class='clickable-row' data-href={{url('/user/' . $user->id)}}>
-              {{ $user->name }}
+              {{ $user->name . ' ' . $user->surname}}
             </td>
             <td style="cursor:pointer" class='clickable-row' data-href={{url('/user/' . $user->id)}}>
               {{ $user->email }}

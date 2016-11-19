@@ -11,7 +11,7 @@
     </tr>
     <tr class={{$user->is_blocked === 1 ? 'danger' : $user->is_accepted === 1 ? 'warning' : 'succes'}}>
         <td>
-          {{ $user->name }}
+          {{ $user->name  . ' ' . $user->surname}}
         </td>
         <td>
           {{ $user->email }}

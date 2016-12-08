@@ -92,12 +92,15 @@
               <div class="col-md-2">
                 <div class="panel panel-default">
                   <!-- Default panel contents -->
-                  <div class="panel-heading">Statistic</div>
+                  {{-- <div class="panel-heading">Statistic</div> --}}
                   <!-- <div class="panel-body">
                   </div> -->
 
                   <!-- List group -->
                   <div class="list-group">
+                    <a href={{url('/statistic')}} class="list-group-item {{isset($currentPage)&&$currentPage === 'statistic'?'active':''}}">
+                          Statistic
+                      </a>
                       <a href={{url('/users')}} class="list-group-item {{isset($currentPage)&&$currentPage === 'all'?'active':''}}">
                           <span class="badge">{{count($yogaUsers)}}</span>
                           All Users

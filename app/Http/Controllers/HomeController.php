@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use \App\YogaUser;
+use \App\YogaService;
+use \App\YogaMessages;
 
 
 class HomeController extends Controller
@@ -108,6 +110,42 @@ class HomeController extends Controller
       return view('users', [
         'currentPage' => $Case,
         'users' => $yogaUsersPaginate,
+        'yogaUsers' => $this->_yogaUsers
+      ]);
+    }
+
+    public function statistic()
+    {
+      $my_users_id = [];
+      foreach (YogaUser::where('instructor', '=', \Auth::user()->email)->get() as $key => $value) {
+        $my_users_id[] = $value->id;
+      }
+      $site_statistic = [
+        'пользователи' => [
+          'all' => count(YogaUser::all()),
+          'own' => count(YogaUser::where('instructor', '=', \Auth::user()->email)->get())
+        ],
+        'приглашения' => [
+          'all' => count(YogaService::whereIn('type', ['teaService', 'couchService', 'walkServices'])->get()),
+          'own' => count(YogaService::whereIn('type', ['teaService', 'couchService', 'walkServices'])
+                                    ->whereIn('user_id', $my_users_id)
+                                    ->get())
+        ],
+        'рекомендации' => [
+          'all' => count(YogaService::where('type', 'checkInn')->get()),
+          'own' => count(YogaService::where('type', 'checkInn')
+                                    ->whereIn('user_id', $my_users_id)
+                                    ->get())
+        ],
+        'сообщения' => [
+          'all' => count(YogaMessages::all()),
+          'own' => count(YogaMessages::whereIn('user_id', $my_users_id)->get())
+        ]
+      ];
+
+      return view('statistic', [
+        'currentPage' => 'statistic',
+        'site_statistic' => $site_statistic,
         'yogaUsers' => $this->_yogaUsers
       ]);
     }

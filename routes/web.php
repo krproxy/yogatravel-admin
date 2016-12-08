@@ -13,6 +13,8 @@
 
 Route::get('/', 'HomeController@users');
 
+Route::get('/statistic', 'HomeController@statistic');
+
 Route::get('/home', 'HomeController@users');
 
 Route::get('/users/{case?}', 'HomeController@users');
